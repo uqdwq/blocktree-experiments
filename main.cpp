@@ -1,32 +1,30 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 #include <tlx/cmdline_parser.hpp>
-std::string get_file_contents(const char *filename, size_t count)
-{
-  std::FILE *fp = std::fopen(filename, "rb");
-  if (fp)
-  {
-    std::string contents;
-    std::fseek(fp, 0, SEEK_END);
-    contents.resize(std::ftell(fp));
-    std::rewind(fp);
-    std::fread(&contents[0], 1, count, fp);
-    std::fclose(fp);
-    return(contents);
-  }
-  throw(errno);
+#include "naiveBlocktree/naiveBlocktree.h"
+
+std::vector<char> read_all_bytes(char const* filename, size_t size) {
+    std::ifstream ifs(filename, std::ios::binary|std::ios::ate);
+    std::ifstream::pos_type pos = ifs.tellg();
+
+    if (pos == 0) {
+        return std::vector<char>{};
+    }
+
+    std::vector<char>  result(pos);
+
+    ifs.seekg(0, std::ios::beg);
+    ifs.read(&result[0], size);
+
+    return result;
 }
 
 int main(int argc, char* argv[]) {
     tlx::CmdlineParser cp;
     cp.set_author("Daniel Meyer <uqdwq@student.kit.edu>");
     cp.set_description("This program should run all the expriments for my thesis");
-
-    // add an unsigned integer option --rounds <N>
-    unsigned rounds = 0;
-    cp.add_unsigned('r', "rounds", "N", rounds,
-                    "Run N rounds of the experiment.");
 
     // add a byte size argument which the user can enter like '1gi'
     uint64_t a_size = 0;
@@ -46,10 +44,13 @@ int main(int argc, char* argv[]) {
 
     // output for debugging
     cp.print_result();
-    std::string content;
-    content =  get_file_contents(a_filename.c_str(), a_size);
+    // std::vector<char> content;
+    // content =  read_all_bytes(a_filename.c_str(), a_size);
     // do something useful
-    std::cout << content << std::endl;
+    char name[] = "bla";
+    char *test = "Test"; 
+    std::cout << name << std::endl;
+    std::cout << test << std::endl;
     return 0;
 }
 

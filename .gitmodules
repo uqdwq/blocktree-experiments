@@ -1,3 +1,6 @@
 [submodule "external/tlx"]
 	path = external/tlx
 	url = git@github.com:uqdwq/tlx.git
+[submodule "external/BlockTreesCmpr"]
+	path = external/BlockTreesCmpr
+	url = git@github.com:uqdwq/BlockTreesCmpr.git
