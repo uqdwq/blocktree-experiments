@@ -34,3 +34,7 @@
 /out
 /data
 /external
+/bench
+/.vscode
+callgrind*
+perf.data*
