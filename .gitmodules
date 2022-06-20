@@ -4,3 +4,7 @@
 [submodule "external/BlockTreesCmpr"]
 	path = external/BlockTreesCmpr
 	url = git@github.com:uqdwq/BlockTreesCmpr.git
+
+[submodule "external/malloc_count"]
+	path = external/malloc_count
+	url = https://github.com/bingmann/malloc_count.git
