@@ -16,7 +16,7 @@ Field_Separator=$IFS
 tau="2,4,8,16"
 leaf="4,8,16,32,64"
 IFS=,
-
+#test
 touch bench/run$code/cmpr.data
 sizeD="1,2,4,8,16,32,64,128"
 #sizeD="1,2,4,8,16,32,64,128"
@@ -37,4 +37,4 @@ sizeE="1,2,4,8,16,32,64,128,256"
 #     "$SCRIPT_PATH"/out/build/BlockTreesExperiments -p "${s}${factor}" -s 1 -t 2 -l 32 -m 2   "$SCRIPT_PATH"/data/english.1024MB >>  bench/run$code/cmpr.data   
 # done
 # bench mine vs given for different sizes;
-"$SCRIPT_PATH"/out/build/BlockTreesExperiments -p "1KiB" -s 1 -t 2 -l 32 -m 3   "$SCRIPT_PATH"/data/english.1024MB >>  bench/run$code/cmpr.data
+"$SCRIPT_PATH"/out/build/BlockTreesExperiments -p "1MiB" -m 2   "$SCRIPT_PATH"/data/english.1024MB

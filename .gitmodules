@@ -8,3 +8,6 @@
 [submodule "external/malloc_count"]
 	path = external/malloc_count
 	url = https://github.com/bingmann/malloc_count.git
+[submodule "external/block_tree"]
+	path = external/block_tree
+	url = git@github.com:uqdwq/block_tree.git

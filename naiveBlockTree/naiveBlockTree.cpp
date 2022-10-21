@@ -215,7 +215,7 @@ void NBlockTree::build_tree_fp() {
         if (block_length * 2 <= input_->size()) {
             RabinKarp rk(*input_,0 ,2 * block_length, N);
         for (int i = 0; i < input_->size() - block_length * 2; i++) {
-            HashString hS(rk.hash(), *input_, i, 2 * block_length - 1);
+            HashString hS(rk.hash(), *input_, i, i + 2 * block_length - 1);
             if(pairs.find(hS) != pairs.end()) {
                 for (auto blocks : pairs[hS]) {
                     if (i != blocks->left_->start_S_) {
@@ -231,6 +231,7 @@ void NBlockTree::build_tree_fp() {
         // hash umarked blocks
         std::unordered_map<std::string, std::vector<processBlock*>> blocks;
         int num_unmarked_blocks = 0;
+        
         for (int i = 0; i < amount_blocks; i++) {
             if (level[i]->counter == 2 || (level[i]->counter == 1 && i == level.size() -1)) {
                 //std::cout << "Block " << i << "is unmarked" << std::endl;
@@ -240,6 +241,7 @@ void NBlockTree::build_tree_fp() {
                 //std::cout << window << " " << blocks[window].size() << std::endl;
             }
         }
+        std::cout << num_unmarked_blocks << std::endl;
         // check pointers for umarked blocks
         RabinKarp rk(*input_, level[0]->start_S_, block_length, N);
         for (int i = 0; i < level.size() && num_unmarked_blocks > 0; i++) {
@@ -275,6 +277,7 @@ void NBlockTree::build_tree_fp() {
         for(int i = 0; i < level.size(); i++) {
             // unmarked blocks get a pointer to another block on the same lvl
             if (level[i]->counter == 2 || (level[i]->counter == 1 && i == level.size() -1)) {
+                std::cout << "HI" << std::endl;
                 UBlock* ub;
                 if (level[i]->offset_ == 0) {
                     ub = new UBlock(level[i]->first_occ_1(), nullptr, 0, level[i]->parent_->length_ / child_number );
