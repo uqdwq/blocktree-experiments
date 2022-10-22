@@ -14,7 +14,6 @@
 #include <unordered_set>
 #include "naiveBlockTree/naiveBlockTree.h"
 #include <chrono>
-#include "malloc_count.h"
 #include <lpfconstruction/bv_blocktree_lpf_pruned.hpp>
 #include <lpfconstruction/bv_blocktree_lpf_theory.hpp>
 #include <lpfconstruction/bv_blocktree_lpf_heuristic.hpp>
@@ -88,8 +87,7 @@ int cbt_size_rank(PCBlockTree& cbt) {
     result = bt_prefix_ranks_first_level_size + bt_first_ranks_total_size + bt_second_ranks_total_size + bt_prefix_ranks_total_size;
     return result + cbt_size_no_rank(cbt);
 }
-int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
-    malloc_count_reset_peak();
+int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = 0;
     std::vector<int64_t> hist(256);
     std::unordered_set<int> characters;
@@ -120,13 +118,12 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
         result += cbt->rank((char)select_c_[i], select_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-    print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , malloc_count_peak(), (double)elapsed/access_queries_.size(), ms_int2.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
+    print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , 0, (double)elapsed/access_queries_.size(), ms_int2.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
     delete bt;
     delete cbt;
     return 0;
 }
-int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
-    malloc_count_reset_peak();
+int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = 1;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size);
@@ -148,12 +145,11 @@ int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::v
         result += bt->rank(select_c_[i], select_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), malloc_count_peak() + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
+    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), 0 + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
-int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
-    malloc_count_reset_peak();
+int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = 2;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_fp_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size,s);
@@ -179,12 +175,12 @@ int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::v
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
-    std::cout << id << "," << text_id << "," << vec.size() << "," << bt->print_space_usage() << "," <<ms_int1.count() << "," << malloc_count_peak() + small_size<< "," << (double)elapsed/access_queries_.size() << "," << ms_int2.count() << "," << bt->print_space_usage() <<","<< (double)elapsed2/select_queries_.size() << s<<"," << tau << "," << max_leaf_size <<std::endl;
+    std::cout << id << "," << text_id << "," << vec.size() << "," << bt->print_space_usage() << "," <<ms_int1.count() << "," << 0 + small_size<< "," << (double)elapsed/access_queries_.size() << "," << ms_int2.count() << "," << bt->print_space_usage() <<","<< (double)elapsed2/select_queries_.size() << s<<"," << tau << "," << max_leaf_size <<std::endl;
     delete bt;
     return 0;
 }
-int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
-    malloc_count_reset_peak();
+int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+
     int id = 3;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_lpf_heuristic<uint8_t, int32_t>*  bt = new BV_BlockTree_lpf_heuristic<uint8_t, int32_t>(vec, tau, max_leaf_size);
@@ -208,12 +204,12 @@ int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, st
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), malloc_count_peak() + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
+    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), 0 + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
-int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
-    malloc_count_reset_peak();
+int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+
     int id = 4;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_fp_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size,s);
@@ -236,12 +232,12 @@ int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::ve
 
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), malloc_count_peak() + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
+    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), 0 + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
-int run_bench_fp_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
-    malloc_count_reset_peak();
+int run_bench_fp_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+
     int id = 5;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_fp_theory<uint8_t, int32_t>*  bt = new BV_BlockTree_fp_theory<uint8_t, int32_t>(vec, tau, max_leaf_size,s);
@@ -253,7 +249,7 @@ int run_bench_fp_theory(std::vector<uint8_t>& vec, std::string& text_id, std::ve
         result += bt->access(query);
     }
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
-    std::cout << id << "," << text_id << "," << vec.size() << "," << bt->print_space_usage() << "," <<ms_int.count() << "," << malloc_count_peak() + bt->print_space_usage()<< "," << (double)elapsed/access_queries_.size() << "," << s<<"," << tau << "," << max_leaf_size <<std::endl;
+    std::cout << id << "," << text_id << "," << vec.size() << "," << bt->print_space_usage() << "," <<ms_int.count() << "," << 0 + bt->print_space_usage()<< "," << (double)elapsed/access_queries_.size() << "," << s<<"," << tau << "," << max_leaf_size <<std::endl;
     delete bt;
     return 0;
 }
@@ -309,8 +305,8 @@ int main(int argc, char* argv[]) {
 //        characters.insert(c);
 //        hist[c]++;
 //    }
-    std::vector<int> taus = {2};
-    std::vector<int> leafs = {8};
+    std::vector<int> taus = {2,4,8,16};
+    std::vector<int> leafs = {4,8,16};
     for (auto t: taus) {
         for (auto l: leafs) {
             run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);

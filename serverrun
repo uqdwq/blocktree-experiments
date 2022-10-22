@@ -1,0 +1,5 @@
+##! /bin/bash
+echo id,text_id,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs,treesize_rs,rank_avg,s,t,l,result
+./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/einstein.en.txt
+./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/world_leaders
+./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/Escherichia_Coli
