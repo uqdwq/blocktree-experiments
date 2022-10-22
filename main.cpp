@@ -88,7 +88,7 @@ int cbt_size_rank(PCBlockTree& cbt) {
     result = bt_prefix_ranks_first_level_size + bt_first_ranks_total_size + bt_second_ranks_total_size + bt_prefix_ranks_total_size;
     return result + cbt_size_no_rank(cbt);
 }
-int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
     malloc_count_reset_peak();
     int id = 0;
     std::vector<int64_t> hist(256);
@@ -109,34 +109,23 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
     auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
     auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t01);
     int64_t result = 0;
-    for (int i = 0; i < cbt->bt_bv_.size(); i++) {
-        std::cout << i << " lvl/bv_s/bv_rs/pointer(n,w,s)/pointer(n,w,s) ";
-        std::cout << cbt->bt_bv_[i]->size() << std::endl;
-    }
-    std::cout << cbt->bt_first_ranks_.size() << std::endl;
-    for (auto c: cbt->bt_first_ranks_) {
-        for (auto lvl: c.second) {
-            std::cout << (char)c.first << " " << (int)lvl->width() << std::endl;
-        }
 
-    }
     auto start = std::chrono::high_resolution_clock::now();
     for (auto const& query : access_queries_) {
-        result += cbt->access(query);
+        result += (uint8_t) cbt->access(query);
     }
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     auto start2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_queries_.size() - 1; i++) {
-        result += cbt->rank('e', select_queries_[i]);
+        result += cbt->rank((char)select_c_[i], select_queries_[i]);
     }
-
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
     print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , malloc_count_peak(), (double)elapsed/access_queries_.size(), ms_int2.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
     delete bt;
     delete cbt;
     return 0;
 }
-int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
     malloc_count_reset_peak();
     int id = 1;
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -158,18 +147,12 @@ int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::v
     for (int i = 0; i < select_c_.size(); i++) {
         result += bt->rank(select_c_[i], select_queries_[i]);
     }
-    for (auto c: bt->chars_) {
-        int mapping = bt->chars_index_[c];
-        for (auto lvl: bt->c_ranks_[mapping]) {
-            std::cout << c << " " << (int) lvl.width() << std::endl;
-        }
-    }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
     print_result(id, text_id, vec.size(), small_size, ms_int1.count(), malloc_count_peak() + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
-int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
     malloc_count_reset_peak();
     int id = 2;
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -200,7 +183,7 @@ int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::v
     delete bt;
     return 0;
 }
-int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
     malloc_count_reset_peak();
     int id = 3;
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -229,7 +212,7 @@ int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, st
     delete bt;
     return 0;
 }
-int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
     malloc_count_reset_peak();
     int id = 4;
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -257,7 +240,7 @@ int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::ve
     delete bt;
     return 0;
 }
-int run_bench_fp_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_fp_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
     malloc_count_reset_peak();
     int id = 5;
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -298,7 +281,7 @@ int main(int argc, char* argv[]) {
     std::mt19937 mersenne_engine(rnd_device());
     std::vector<int> access_queries_;
     std::vector<int> select_queries_;
-    std::vector<uint8_t> select_c_;
+    std::vector<int> select_c_;
     std::unordered_map<char, int64_t> hist;
     for (int i =  0; i < input.size(); i++) {
         hist[input[i]] = hist[input[i]] + 1;
