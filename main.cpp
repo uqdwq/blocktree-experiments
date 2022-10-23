@@ -87,8 +87,7 @@ int cbt_size_rank(PCBlockTree& cbt) {
     result = bt_prefix_ranks_first_level_size + bt_first_ranks_total_size + bt_second_ranks_total_size + bt_prefix_ranks_total_size;
     return result + cbt_size_no_rank(cbt);
 }
-int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
-
+int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = 0;
     std::vector<int64_t> hist(256);
     std::unordered_set<int> characters;
@@ -101,31 +100,33 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
     bt->clean_unnecessary_expansions();
     bt->check();
     auto t02 = std::chrono::high_resolution_clock::now();
+    PCBlockTree* abt = new PCBlockTree(bt);
+    auto t0x = std::chrono::high_resolution_clock::now();
     for (int c: characters)
       bt->add_rank_select_support(c);
     PCBlockTree* cbt = new PCBlockTree(bt);
     auto t03 = std::chrono::high_resolution_clock::now();
-    auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
-    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t01);
+    auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t0x - t01);
+    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
+    auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t0x);
     int64_t result = 0;
-
     auto start = std::chrono::high_resolution_clock::now();
     for (auto const& query : access_queries_) {
-        result += (uint8_t) cbt->access(query);
+        result += abt->access(query);
     }
+    delete abt;
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     auto start2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_queries_.size() - 1; i++) {
         result += cbt->rank((char)select_c_[i], select_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-    print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , 0, (double)elapsed/access_queries_.size(), ms_int2.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
+    print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , 0, (double)elapsed/access_queries_.size(), ms_int2.count() + ms_int3.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
     delete bt;
     delete cbt;
     return 0;
 }
-int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
-    std::cout << 12321321 << std::endl;
+int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = 1;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size);
@@ -151,7 +152,7 @@ int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::v
     delete bt;
     return 0;
 }
-int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = 2;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_fp_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size,s);
@@ -181,7 +182,7 @@ int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::v
     delete bt;
     return 0;
 }
-int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
 
     int id = 3;
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -210,7 +211,7 @@ int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, st
     delete bt;
     return 0;
 }
-int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
 
     int id = 4;
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -279,7 +280,7 @@ int main(int argc, char* argv[]) {
     std::mt19937 mersenne_engine(rnd_device());
     std::vector<int> access_queries_;
     std::vector<int> select_queries_;
-    std::vector<int> select_c_;
+    std::vector<uint8_t> select_c_;
     std::unordered_map<char, int64_t> hist;
     for (int i =  0; i < input.size(); i++) {
         hist[input[i]] = hist[input[i]] + 1;
@@ -291,14 +292,23 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < 1000000; ++i) {
         uint8_t x = 0;
         int xsum = 0;
-        while (xsum + hist[x] < access_queries_[i]) {
-            xsum += hist[x];
-            x++;
+        for (auto p: hist) {
+            if (xsum + p.second >= access_queries_[i]) {
+                break;
+            }
+            xsum += p.second;
+            x = p.first;
+
         }
-        select_c_.push_back(x);
+        // while (xsum + hist[x] < access_queries_[i]) {
+        //     xsum += hist[x];
+        //     x++;
+        // }
+        if (x != 0) {
+            select_c_.push_back(x);
+            select_queries_.push_back(access_queries_[i] - xsum);
+        }
 
-
-        select_queries_.push_back(access_queries_[i] - xsum);
     }
     std::vector<uint8_t> vec(input.begin(), input.end());
 
