@@ -99,6 +99,10 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
     bt->process_back_pointers();
     bt->clean_unnecessary_expansions();
     bt->check();
+    int64_t size = 0;
+    for (auto level: bt->levelwise_iterator()) {
+        size += level.size() * 12;
+    }
     auto t02 = std::chrono::high_resolution_clock::now();
     PCBlockTree* abt = new PCBlockTree(bt);
     auto t0x = std::chrono::high_resolution_clock::now();
@@ -114,15 +118,16 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
     for (auto const& query : access_queries_) {
         result += abt->access(query);
     }
-    delete abt;
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
+    delete abt;
+    delete bt;
     auto start2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_queries_.size() - 1; i++) {
         result += cbt->rank((char)select_c_[i], select_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-    print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , 0, (double)elapsed/access_queries_.size(), ms_int2.count() + ms_int3.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
-    delete bt;
+    print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , size, (double)elapsed/access_queries_.size(), ms_int2.count() + ms_int3.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
+
     delete cbt;
     return 0;
 }
@@ -148,7 +153,7 @@ int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::v
         result += bt->rank(select_c_[i], select_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), 0 + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
+    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), vec.size() * 24,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
@@ -207,7 +212,7 @@ int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, st
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), 0 + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
+    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), vec.size() * 24,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
@@ -235,7 +240,7 @@ int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::ve
 
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), 0 + small_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
+    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), bt->const_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
@@ -321,8 +326,8 @@ int main(int argc, char* argv[]) {
     std::vector<int> leafs = {4,8,16};
     for (auto t: taus) {
         for (auto l: leafs) {
-            run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
             run_bench_lpf_pruned(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
 //            run_bench_lpf_theory(vec, a_filename,access_queries_,t,l);
             run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_fp_pruned(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);

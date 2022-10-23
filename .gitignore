@@ -38,3 +38,5 @@
 /.vscode
 callgrind*
 perf.data*
+.idea/
+cmake-build-debug/
