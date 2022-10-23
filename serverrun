@@ -3,3 +3,8 @@ echo id,text_id,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs
 ./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/einstein.en.txt
 ./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/world_leaders
 ./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/Escherichia_Coli
+./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/cere
+./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/coreutils
+./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/influenza
+./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/kernel
+./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/para
