@@ -100,25 +100,28 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
     bt->clean_unnecessary_expansions();
     bt->check();
     auto t02 = std::chrono::high_resolution_clock::now();
+    PCBlockTree* abt = new PCBlockTree(bt);
+    auto t0x = std::chrono::high_resolution_clock::now(); 
     for (int c: characters)
       bt->add_rank_select_support(c);
     PCBlockTree* cbt = new PCBlockTree(bt);
     auto t03 = std::chrono::high_resolution_clock::now();
-    auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
-    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t01);
+    auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t0x - t01);
+    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
+    auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t0x);
     int64_t result = 0;
     auto start = std::chrono::high_resolution_clock::now();
     for (auto const& query : access_queries_) {
-        result += cbt->access(query);
+        result += abt->access(query);
     }
+    delete abt;
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     auto start2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_queries_.size() - 1; i++) {
-        result += cbt->rank('e', select_queries_[i]);
+        result += cbt->rank((char)select_c_[i], select_queries_[i]);
     }
-
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-    print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , 0, (double)elapsed/access_queries_.size(), ms_int2.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
+    print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , 0, (double)elapsed/access_queries_.size(), ms_int2.count() + ms_int3.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
     delete bt;
     delete cbt;
     return 0;
@@ -170,8 +173,11 @@ int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::v
     start = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < select_c_.size(); i++) {
-
+        std::cout << i << " " << select_c_[i] << std::endl;
         result += bt->rank(select_c_[i], select_queries_[i]);
+        if (select_c_[i] > 127) {
+            std::cout << i << std::endl;
+        }
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
@@ -289,14 +295,23 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < 1000000; ++i) {
         uint8_t x = 0;
         int xsum = 0;
-        while (xsum + hist[x] < access_queries_[i]) {
-            xsum += hist[x];
-            x++;
+        for (auto p: hist) {
+            if (xsum + p.second >= access_queries_[i]) {
+                break;
+            }
+            xsum += p.second;
+            x = p.first;
+
         }
-        select_c_.push_back(x);
+        // while (xsum + hist[x] < access_queries_[i]) {
+        //     xsum += hist[x];
+        //     x++;
+        // }
+        if (x != 0) {
+            select_c_.push_back(x);
+            select_queries_.push_back(access_queries_[i] - xsum);
+        }
 
-
-        select_queries_.push_back(access_queries_[i] - xsum);
     }
     std::vector<uint8_t> vec(input.begin(), input.end());
 
