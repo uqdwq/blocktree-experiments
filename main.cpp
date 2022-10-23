@@ -87,7 +87,8 @@ int cbt_size_rank(PCBlockTree& cbt) {
     result = bt_prefix_ranks_first_level_size + bt_first_ranks_total_size + bt_second_ranks_total_size + bt_prefix_ranks_total_size;
     return result + cbt_size_no_rank(cbt);
 }
-int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
+
     int id = 0;
     std::vector<int64_t> hist(256);
     std::unordered_set<int> characters;
@@ -123,7 +124,8 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
     delete cbt;
     return 0;
 }
-int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
+    std::cout << 12321321 << std::endl;
     int id = 1;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size);
@@ -149,7 +151,7 @@ int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::v
     delete bt;
     return 0;
 }
-int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
     int id = 2;
     auto t01 = std::chrono::high_resolution_clock::now();
     BV_BlockTree_fp_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size,s);
@@ -179,7 +181,7 @@ int run_bench_lpf_theory(std::vector<uint8_t>& vec, std::string& text_id, std::v
     delete bt;
     return 0;
 }
-int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
 
     int id = 3;
     auto t01 = std::chrono::high_resolution_clock::now();
@@ -208,7 +210,7 @@ int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, st
     delete bt;
     return 0;
 }
-int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<int>& select_c_, int s, int tau, int max_leaf_size) {
 
     int id = 4;
     auto t01 = std::chrono::high_resolution_clock::now();
