@@ -10,9 +10,9 @@
 #popd  > /dev/null
 echo id,text_id,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs,treesize_rs,rank_avg,s,t,l,result
 #./out/build/BlockTreesExperiments -p "32MiB" ./data/cere
-#./out/build/BlockTreesExperiments -p "32MiB" ./data/coreutils
+./out/build/BlockTreesExperiments -p "16MiB" ./data/coreutils
 #./out/build/BlockTreesExperiments -p "32MiB" ./data/dblp.xml
-./out/build/BlockTreesExperiments -p "32MiB" ./data/einstein.en.txt
+#./out/build/BlockTreesExperiments -p "32MiB" ./data/einstein.en.txt
 #./out/build/BlockTreesExperiments -p "1MiB" ./data/english
 #./out/build/BlockTreesExperiments -p "100MiB" ./data/Escherichia_Coli
 #./out/build/BlockTreesExperiments -p "100MiB" ./data/influenza

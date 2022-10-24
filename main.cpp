@@ -20,7 +20,7 @@
 #include <fppconstruction/bv_blocktree_fp_pruned.hpp>
 #include <fppconstruction/bv_blocktree_fp_theory.hpp>
 //std::cout << id << "," << text_id << "," << vec.size() << "," << bt->print_space_usage() << "," <<ms_int1.count() << "," << malloc_count_peak() + small_size<< "," << (double)elapsed/access_queries_.size() << "," << ms_int2.count() << "," << bt->print_space_usage() <<","<< (double)elapsed2/select_queries_.size() << s<<"," << tau << "," << max_leaf_size <<std::endl;
-void print_result(int id, std::string text_id, int vec_size, int small_size, int first_time, int peak_size, double access_avg, int snd_time, int big_size, double rank_avg, int s, int tau, int leaf_size, int64_t result) {
+void print_result(int id, std::string text_id, int vec_size, int small_size, int first_time, int64_t peak_size, double access_avg, int snd_time, int big_size, double rank_avg, int s, int tau, int leaf_size, int64_t result) {
     std::cout << id << ",";
     std::cout << text_id << ",";
     std::cout << vec_size << ",";
@@ -59,7 +59,6 @@ int cbt_size_no_rank(PCBlockTree& cbt) {
 }
 int cbt_size_rank(PCBlockTree& cbt) {
     int result = 0;
-
     int bt_prefix_ranks_first_level_size = (cbt.bt_first_level_prefix_ranks_.size()+1) * sizeof(void*);;
     for (auto pair: cbt.bt_first_level_prefix_ranks_) {
         bt_prefix_ranks_first_level_size += sdsl::size_in_bytes(*(pair.second));
@@ -81,8 +80,12 @@ int cbt_size_rank(PCBlockTree& cbt) {
         bt_second_ranks_total_size += size;
     }
     int bt_prefix_ranks_total_size = (cbt.bt_prefix_ranks_.size()+1) * sizeof(void*);
-    for (auto pair: cbt.bt_first_level_prefix_ranks_) {
-        bt_prefix_ranks_first_level_size += sdsl::size_in_bytes(*(pair.second));
+    for (auto pair: cbt.bt_prefix_ranks_) {
+        int size = 0;
+        for (sdsl::int_vector<>* ranks: pair.second) {
+            size += sdsl::size_in_bytes(*ranks);
+        }
+        bt_prefix_ranks_first_level_size += size;
     }
     result = bt_prefix_ranks_first_level_size + bt_first_ranks_total_size + bt_second_ranks_total_size + bt_prefix_ranks_total_size;
     return result + cbt_size_no_rank(cbt);
@@ -109,6 +112,9 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
     for (int c: characters)
       bt->add_rank_select_support(c);
     PCBlockTree* cbt = new PCBlockTree(bt);
+//    for (char  c: characters) {
+//       std::cout << c << " " << cbt->bt_prefix_ranks_[c].size() << std::endl;
+//    }
     auto t03 = std::chrono::high_resolution_clock::now();
     auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t0x - t01);
     auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
@@ -123,11 +129,10 @@ int run_bench_comp(std::string& input, std::string text_id, std::vector<int>& ac
     delete bt;
     auto start2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_queries_.size() - 1; i++) {
-        result += cbt->rank((char)select_c_[i], select_queries_[i]);
+        result += cbt->better_paper_rank((char)select_c_[i], select_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
     print_result(id, text_id, input.size(), cbt_size_no_rank(*cbt), ms_int1.count() , size, (double)elapsed/access_queries_.size(), ms_int2.count() + ms_int3.count(),cbt_size_rank(*cbt) ,(double)elapsed2/select_queries_.size(), 1, tau, max_leaf_size, result);
-
     delete cbt;
     return 0;
 }
@@ -153,7 +158,8 @@ int run_bench_lpf_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::v
         result += bt->rank(select_c_[i], select_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), vec.size() * 24,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
+    int64_t size_heap = vec.size() * 24;
+    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), size_heap,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
@@ -211,8 +217,8 @@ int run_bench_lpf_heuristics(std::vector<uint8_t>& vec, std::string& text_id, st
         result += bt->rank(select_c_[i], select_queries_[i]);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
-
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), vec.size() * 24,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
+    int64_t size_heap = vec.size() * 24;
+    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), size_heap,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
     delete bt;
     return 0;
 }
@@ -327,9 +333,12 @@ int main(int argc, char* argv[]) {
     for (auto t: taus) {
         for (auto l: leafs) {
             run_bench_lpf_pruned(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
-//            run_bench_lpf_theory(vec, a_filename,access_queries_,t,l);
             run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
+
+
+//            run_bench_lpf_theory(vec, a_filename,access_queries_,t,l);
+
             run_bench_fp_pruned(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
 //            run_bench_fp_theory(vec, a_filename,access_queries_,1,t,l);
         }
