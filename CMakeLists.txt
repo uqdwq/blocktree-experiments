@@ -14,6 +14,7 @@ add_subdirectory(external/BlockTreesCmpr)
 add_subdirectory(external/block_tree)
 include_directories(external/BlockTreesCmpr/includes)
 include_directories(external/BlockTreesCmprexternal/sdsl-lite/include)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/malloc_count)
 target_include_directories(${PROJECT_NAME}
     PUBLIC external/BlockTreesCmpr/include/
     PUBLIC external/BlockTreesCmpr/external/sdsl-lite/include
@@ -36,6 +37,7 @@ target_link_libraries(${PROJECT_NAME} sais)
 target_link_libraries(${PROJECT_NAME} sais64)
 target_link_libraries(${PROJECT_NAME} pasta_bit_vector)
 target_link_libraries(${PROJECT_NAME} tlx blocktree)
+target_link_libraries(${PROJECT_NAME} malloc_count)
 target_link_libraries( ${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/external/BlockTreesCmpr/external/sdsl-lite/lib/libsdsl.a )
 target_link_libraries( ${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/external/BlockTreesCmpr/external/sdsl-lite/lib/libdivsufsort.a )
 target_link_libraries( ${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/external/BlockTreesCmpr/external/sdsl-lite/lib/libdivsufsort64.a )

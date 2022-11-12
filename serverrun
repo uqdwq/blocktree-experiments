@@ -1,10 +1,25 @@
 ##! /bin/bash
 echo id,text_id,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs,treesize_rs,rank_avg,s,t,l,result
-./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/einstein.en.txt
-./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/world_leaders
-./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/Escherichia_Coli
-./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/cere
-./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/coreutils
-./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/influenza
-./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/kernel
-./build/BlockTreesExperiments -p "32MiB" /workspace/dmeyer/data/para
+# ./build/BlockTreesExperiments -p "46968181" /workspace/dmeyer/data/world_leaders
+# ./build/BlockTreesExperiments -p "112689515" /workspace/dmeyer/data/Escherichia_Coli
+# ./build/BlockTreesExperiments -p "154808555" /workspace/dmeyer/data/influenza
+# # ./build/BlockTreesExperiments -p "205281778" /workspace/dmeyer/data/coreutils
+# # ./build/BlockTreesExperiments -p "257961616" /workspace/dmeyer/data/kernel
+# ./build/BlockTreesExperiments -p "64MiB" /workspace/dmeyer/data/dblp.xml
+# ./build/BlockTreesExperiments -p "64MiB" /workspace/dmeyer/data/dna
+./build/BlockTreesExperiments -p "100MiB" /workspace/dmeyer/data/english
+./build/BlockTreesExperiments -p "200MiB" /workspace/dmeyer/data/english
+./build/BlockTreesExperiments -p "300MiB" /workspace/dmeyer/data/english
+./build/BlockTreesExperiments -p "400MiB" /workspace/dmeyer/data/english
+./build/BlockTreesExperiments -p "500MiB" /workspace/dmeyer/data/english
+./build/BlockTreesExperiments -p "600MiB" /workspace/dmeyer/data/english
+./build/BlockTreesExperiments -p "700MiB" /workspace/dmeyer/data/english
+# ./build/BlockTreesExperiments -p "800MiB" /workspace/dmeyer/data/english
+# ./build/BlockTreesExperiments -p "900MiB" /workspace/dmeyer/data/english
+# ./build/BlockTreesExperiments -p "1000MiB" /workspace/dmeyer/data/english
+# ./build/BlockTreesExperiments -p "55832855" /workspace/dmeyer/data/pitches
+# ./build/BlockTreesExperiments -p "64MiB" /workspace/dmeyer/data/proteins
+# ./build/BlockTreesExperiments -p "64MiB" /workspace/dmeyer/data/sources
+# ./build/BlockTreesExperiments -p "467626544" /workspace/dmeyer/data/einstein.en.txt
+# ./build/BlockTreesExperiments -p "461286644" /workspace/dmeyer/data/cere
+# ./build/BlockTreesExperiments -p "429265758" /workspace/dmeyer/data/para

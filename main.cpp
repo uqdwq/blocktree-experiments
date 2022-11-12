@@ -19,6 +19,7 @@
 #include <lpfconstruction/bv_blocktree_lpf_heuristic.hpp>
 #include <fppconstruction/bv_blocktree_fp_pruned.hpp>
 #include <fppconstruction/bv_blocktree_fp_theory.hpp>
+
 //std::cout << id << "," << text_id << "," << vec.size() << "," << bt->print_space_usage() << "," <<ms_int1.count() << "," << malloc_count_peak() + small_size<< "," << (double)elapsed/access_queries_.size() << "," << ms_int2.count() << "," << bt->print_space_usage() <<","<< (double)elapsed2/select_queries_.size() << s<<"," << tau << "," << max_leaf_size <<std::endl;
 void print_result(int id, std::string text_id, int vec_size, int small_size, int first_time, int64_t peak_size, double access_avg, int snd_time, int big_size, double rank_avg, int s, int tau, int leaf_size, int64_t result) {
     std::cout << id << ",";
@@ -229,21 +230,26 @@ int run_bench_fp_pruned(std::vector<uint8_t>& vec, std::string& text_id, std::ve
     BV_BlockTree_fp_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size,s);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto small_size = bt->print_space_usage();
+    std::cout << "begin ranks" << std::endl;
     bt->add_rank_support();
+    std::cout << "end ranks" << std::endl;
     auto t03 = std::chrono::high_resolution_clock::now();
     auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
     auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t01);
     int64_t result = 0;
+        std::cout << "begin access" << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
     for (auto const& query : access_queries_) {
         result += bt->access(query);
     }
+            std::cout << "end access" << std::endl;
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     start = std::chrono::high_resolution_clock::now();
+            std::cout << "begin rank q" << std::endl;
     for (int i = 0; i < select_c_.size(); i++) {
         result += bt->rank(select_c_[i], select_queries_[i]);
     }
-
+                std::cout << "begin end q" << std::endl;
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
     print_result(id, text_id, vec.size(), small_size, ms_int1.count(), bt->const_size,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size() , s, tau, max_leaf_size, result );
@@ -328,18 +334,19 @@ int main(int argc, char* argv[]) {
 //        characters.insert(c);
 //        hist[c]++;
 //    }
-    std::vector<int> taus = {2,4,8,16};
-    std::vector<int> leafs = {4,8,16};
+    std::vector<int> taus = {2};
+    std::vector<int> leafs = {4};
     for (auto t: taus) {
         for (auto l: leafs) {
-            run_bench_lpf_pruned(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            // run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
+            // run_bench_fp_pruned(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            // run_bench_lpf_pruned(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
+
 
 
 //            run_bench_lpf_theory(vec, a_filename,access_queries_,t,l);
 
-            run_bench_fp_pruned(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
 //            run_bench_fp_theory(vec, a_filename,access_queries_,1,t,l);
         }
     }
