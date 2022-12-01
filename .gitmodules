@@ -11,3 +11,6 @@
 [submodule "external/block_tree"]
 	path = external/block_tree
 	url = git@github.com:uqdwq/block_tree.git
+[submodule "external/wavelet_tree"]
+	path = external/wavelet_tree
+	url = git@github.com:pasta-toolbox/wavelet_tree.git

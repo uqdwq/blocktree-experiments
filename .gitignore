@@ -40,3 +40,4 @@ callgrind*
 perf.data*
 .idea/
 cmake-build-debug/
+notebooks/.ipynb_checkpoints/
