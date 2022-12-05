@@ -44,12 +44,12 @@ int main(int argc, char* argv[]) {
     std::stringstream buffer;
     t.read(&input[0], a_size);
     std::vector<uint8_t> vec(input.begin(), input.end());
-    std::vector<int32_t> lpf2(vec.size());
-    std::vector<int32_t> lpf_ptr2(vec.size());
-    std::vector<int32_t> lz2;
-    int32_t lzn = 0;
+    std::vector<int64_t> lpf2(vec.size());
+    std::vector<int64_t> lpf_ptr2(vec.size());
+    std::vector<int64_t> lz2;
+    int64_t lzn = 0;
     lpf_array_stack(vec, lpf2, lpf_ptr2);
-    int32_t s = 1;
-    calculate_number_lz_factor(s, lpf2);
-    std::cout << a_filename << "#LZ: " << s << " : " << vec.size() << std::endl;
+    int64_t s = 1;
+    calculate_lz_factor(s, lpf2,lz2);
+    std::cout << a_filename << "#LZ: " << (int64_t) s << " : " << vec.size() << std::endl;
 }
