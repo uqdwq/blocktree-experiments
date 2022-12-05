@@ -21,6 +21,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/malloc_count)
 set(benches
         main
         compbench
+        calclz
         )
 foreach(bench ${benches})
     add_executable(${bench} ${bench}.cpp)
