@@ -22,6 +22,7 @@ set(benches
         main
         compbench
         calclz
+        accessonly
         )
 foreach(bench ${benches})
     add_executable(${bench} ${bench}.cpp)

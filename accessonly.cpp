@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
     std::ifstream t(a_filename);
     std::stringstream buffer;
     t.read(&input[0], a_size);
-        std::random_device rnd_device;
+    std::random_device rnd_device;
     std::mt19937 mersenne_engine(rnd_device());
     std::vector<int> access_queries_;
     std::vector<int> select_queries_;
@@ -93,18 +93,18 @@ int main(int argc, char* argv[]) {
     for (auto t: taus) {
         for (auto l: leafs) {
             // lpf pruned
-            run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_s_cut_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_heuristics_access(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_pruned_s_cut_dp_access(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
 //            run_bench_lpf_pruned_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
 //            run_bench_lpf_pruned_s_no_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_z_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_theory_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_theory_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
-            run_bench_fp_pruned_s_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_pruned_z_dp_access(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_pruned_z_no_dp_access(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_theory_s_cut_no_dp_access(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_theory_z_no_dp_access(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_comp_access(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
+            run_bench_fp_pruned_s_CUT_access(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
 //            run_bench_fp_pruned_z_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_fp_theo_s_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_fp_theo_s_CUT_access(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
 //            run_bench_fp_theo_z_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
 
 
