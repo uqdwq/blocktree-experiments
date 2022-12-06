@@ -93,19 +93,19 @@ int main(int argc, char* argv[]) {
     for (auto t: taus) {
         for (auto l: leafs) {
             // lpf pruned
-            run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_s_cut_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-//            run_bench_lpf_pruned_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-//            run_bench_lpf_pruned_s_no_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_z_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+//            run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+//            run_bench_lpf_pruned_s_cut_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+////            run_bench_lpf_pruned_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+////            run_bench_lpf_pruned_s_no_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+//            run_bench_lpf_pruned_z_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+//            run_bench_lpf_pruned_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_lpf_theory_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_lpf_theory_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
             run_bench_fp_pruned_s_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-//            run_bench_fp_pruned_z_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_fp_pruned_z_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_fp_theo_s_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-//            run_bench_fp_theo_z_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_fp_theo_z_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
 
 
 
