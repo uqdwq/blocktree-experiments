@@ -85,20 +85,20 @@ int main(int argc, char* argv[]) {
 //        hist[c]++;
 //    }
 
-
-    run_pasta_wavelet_matrix(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
-    run_pasta_wavelet_tree(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
+//
+//    run_pasta_wavelet_matrix(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
+//    run_pasta_wavelet_tree(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
     std::vector<int> taus = {16,8,4,2,};
     std::vector<int> leafs = {16,8,4};
     for (auto t: taus) {
         for (auto l: leafs) {
             // lpf pruned
-//            run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-//            run_bench_lpf_pruned_s_cut_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-////            run_bench_lpf_pruned_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-////            run_bench_lpf_pruned_s_no_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-//            run_bench_lpf_pruned_z_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-//            run_bench_lpf_pruned_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_pruned_s_cut_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_pruned_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+//            run_bench_lpf_pruned_s_no_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_pruned_z_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
+            run_bench_lpf_pruned_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_lpf_theory_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_lpf_theory_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
             run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);

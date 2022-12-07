@@ -121,8 +121,8 @@ int run_bench_comp(std::string& input, const std::string& text_id, std::vector<i
     auto t0x = std::chrono::high_resolution_clock::now();
     for (int c: characters)
         bt->add_rank_select_support(c);
-    auto* cbt = new PCBlockTree(bt);
     auto t03 = std::chrono::high_resolution_clock::now();
+    auto* cbt = new PCBlockTree(bt);
     auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t0x - t01);
     auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
     auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t0x);
@@ -225,43 +225,43 @@ int run_bench_lpf_pruned_s_cut_no_dp(std::vector<uint8_t>& vec, std::string& tex
     return 0;
 }
 
-int run_bench_lpf_pruned_s_no_cut_no_dp(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
-    int id = LPF_PRUNED_S_NO_CUT_NO_DP;
-    auto wm = pasta::make_wm<pasta::BitVector>(vec.begin(), vec.end(),
-                                               256);
-    auto t01 = std::chrono::high_resolution_clock::now();
-    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size,s,true, DONT_CUT_FIRST_LEVEL, NO_DP);
-    auto t02 = std::chrono::high_resolution_clock::now();
-    auto small_size = bt->print_space_usage();
-    bt->add_rank_support();
-    auto t03 = std::chrono::high_resolution_clock::now();
-    auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
-    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t01);
-    int64_t result = 0;
-    auto start = std::chrono::high_resolution_clock::now();
-    for (auto const& query : access_queries_) {
-        result += bt->access(query);
-    }
-    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
-    auto start2 = std::chrono::high_resolution_clock::now();
-
-    for (int i = 0; i < select_c_.size(); i++) {
-        result += bt->rank(select_c_[i], select_queries_[i] - 1);
-    }
-
-    auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-    auto start3 = std::chrono::high_resolution_clock::now();
-
-    for (int i = 0; i < select_c_.size(); i++) {
-        result += bt->select(select_c_[i], select_queries_[i]);
-    }
-
-    auto elapsed3 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start3).count();
-    int64_t size_heap = vec.size() * 24;
-    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), size_heap,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size(),(double)elapsed3/select_queries_.size() , s, tau, max_leaf_size, result );
-    delete bt;
-    return 0;
-}
+//int run_bench_lpf_pruned_s_no_cut_no_dp(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
+//    int id = LPF_PRUNED_S_NO_CUT_NO_DP;
+//    auto wm = pasta::make_wm<pasta::BitVector>(vec.begin(), vec.end(),
+//                                               256);
+//    auto t01 = std::chrono::high_resolution_clock::now();
+//    BV_BlockTree_lpf_pruned<uint8_t, int32_t>*  bt = new BV_BlockTree_lpf_pruned<uint8_t, int32_t>(vec, tau, max_leaf_size,s,true, DONT_CUT_FIRST_LEVEL, NO_DP);
+//    auto t02 = std::chrono::high_resolution_clock::now();
+//    auto small_size = bt->print_space_usage();
+//    bt->add_rank_support();
+//    auto t03 = std::chrono::high_resolution_clock::now();
+//    auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
+//    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t01);
+//    int64_t result = 0;
+//    auto start = std::chrono::high_resolution_clock::now();
+//    for (auto const& query : access_queries_) {
+//        result += bt->access(query);
+//    }
+//    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
+//    auto start2 = std::chrono::high_resolution_clock::now();
+//
+//    for (int i = 0; i < select_c_.size(); i++) {
+//        result += bt->rank(select_c_[i], select_queries_[i] - 1);
+//    }
+//
+//    auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
+//    auto start3 = std::chrono::high_resolution_clock::now();
+//
+//    for (int i = 0; i < select_c_.size(); i++) {
+//        result += bt->select(select_c_[i], select_queries_[i]);
+//    }
+//
+//    auto elapsed3 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start3).count();
+//    int64_t size_heap = vec.size() * 24;
+//    print_result(id, text_id, vec.size(), small_size, ms_int1.count(), size_heap,(double)elapsed/access_queries_.size(), ms_int2.count(), bt->print_space_usage(), (double)elapsed2/select_queries_.size(),(double)elapsed3/select_queries_.size() , s, tau, max_leaf_size, result );
+//    delete bt;
+//    return 0;
+//}
 
 int run_bench_lpf_pruned_z_dp(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = LPF_PRUNED_Z_CUT_DP;
