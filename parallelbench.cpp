@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
     std::ifstream t(a_filename);
     std::stringstream buffer;
     t.read(&input[0], a_size);
-        std::random_device rnd_device;
+    std::random_device rnd_device;
     std::mt19937 mersenne_engine(rnd_device());
     std::vector<int> access_queries_;
     std::vector<int> select_queries_;
@@ -86,29 +86,17 @@ int main(int argc, char* argv[]) {
 //        hist[c]++;
 //    }
 
-//
+
 //    run_pasta_wavelet_matrix(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
-//    run_pasta_wavelet_tree(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
-    std::vector<int> taus = {16,8,4,2,};
-    std::vector<int> leafs = {16,8,4};
+    run_pasta_wavelet_tree(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
+    std::vector<int> taus = {16,8,4,2};
+    std::vector<int> threads = {1,2,4,8,16,32,64};
+    int l = 8;
     for (auto t: taus) {
-        for (auto l: leafs) {
-            // lpf pruned
-            run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_s_cut_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-//            run_bench_lpf_pruned_s_no_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_z_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_pruned_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_theory_s_cut_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_lpf_theory_z_no_dp(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_comp(input,a_filename,access_queries_,select_queries_, select_c_,1,t,l);
-            run_bench_fp_pruned_s_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_fp_pruned_z_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_fp_theo_s_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-            run_bench_fp_theo_z_CUT(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l);
-
-
+        for (auto th: threads) {
+            run_bench_lpf_pruned_s_parallel(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l,th);
+            run_bench_lpf_theo_z_parallel(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l,th);
+            run_bench_lpf_heu_z_parallel(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l,th);
 
 
 

@@ -1,0 +1,11 @@
+##! /bin/bash
+export LD_LIBRARY_PATH=/software/gcc/12.1.0/lib64/:$LD_LIBRARY_PATH
+echo id,text_id,threads,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs,treesize_rs,rank_avg,select_avg,s,t,l,result
+ ./buildpar/main -p "46968181" /workspace/dmeyer/data/world_leaders
+ ./buildpar/main -p "112689515" /workspace/dmeyer/data/Escherichia_Coli
+ ./buildpar/main -p "154808555" /workspace/dmeyer/data/influenza
+ ./buildpar/main -p "205281778" /workspace/dmeyer/data/coreutils
+ ./buildpar/main -p "257961616" /workspace/dmeyer/data/kernel
+ ./buildpar/main -p "467626544" /workspace/dmeyer/data/einstein.en.txt
+ ./buildpar/main -p "461286644" /workspace/dmeyer/data/cere
+ ./buildpar/main -p "429265758" /workspace/dmeyer/data/para

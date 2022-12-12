@@ -9,7 +9,7 @@ set (CMAKE_CXX_STANDARD 20)
 #add_executable(fingerprinttest fptest.cpp)
 #add_executable(template templatetest.cpp)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -march=native")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -g -fsanitize=address -fopenmp -ldl -lm -lstdc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fopenmp -ldl -lm -lstdc++")
 #-fsanitize=address
 add_subdirectory(external/tlx)
 add_subdirectory(external/BlockTreesCmpr)
@@ -24,6 +24,7 @@ set(benches
         compbench
         calclz
         accessonly
+        parallelbench
         )
 foreach(bench ${benches})
     add_executable(${bench} ${bench}.cpp)
