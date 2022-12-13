@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
 //    run_pasta_wavelet_matrix(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
     run_pasta_wavelet_tree(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
     std::vector<int> taus = {16,8,4,2};
-    std::vector<int> threads = {1,2,4,8,16,32,64};
+    std::vector<int> threads = {1,2,4,8,16,32,40};
     int l = 8;
     for (auto t: taus) {
         for (auto th: threads) {
