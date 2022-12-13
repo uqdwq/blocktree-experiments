@@ -7,3 +7,15 @@ echo id,text_id,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs
 ./build/accessonly -p "1184051855" /workspace/dmeyer/data/proteins
 ./build/accessonly -p "210866607" /workspace/dmeyer/data/sources
 ./build/accessonly -p "1610612736" /workspace/dmeyer/data/english
+./build/accessonly -p "296135874" /workspace/dmeyer/data/dblp.xml
+./build/accessonly -p "403927746" /workspace/dmeyer/data/dna
+./build/accessonly -p "55832855" /workspace/dmeyer/data/pitches
+./build/accessonly -p "1184051855" /workspace/dmeyer/data/proteins
+./build/accessonly -p "210866607" /workspace/dmeyer/data/sources
+./build/accessonly -p "1610612736" /workspace/dmeyer/data/english
+./build/accessonly -p "296135874" /workspace/dmeyer/data/dblp.xml
+./build/accessonly -p "403927746" /workspace/dmeyer/data/dna
+./build/accessonly -p "55832855" /workspace/dmeyer/data/pitches
+./build/accessonly -p "1184051855" /workspace/dmeyer/data/proteins
+./build/accessonly -p "210866607" /workspace/dmeyer/data/sources
+./build/accessonly -p "1610612736" /workspace/dmeyer/data/english
