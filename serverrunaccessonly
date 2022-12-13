@@ -1,16 +1,9 @@
 ##! /bin/bash
 export LD_LIBRARY_PATH=/software/gcc/12.1.0/lib64/:$LD_LIBRARY_PATH
-# ./build/accessonly -p "46968181" /workspace/dmeyer/data/world_leaders
-# ./build/accessonly -p "112689515" /workspace/dmeyer/data/Escherichia_Coli
-# ./build/accessonly -p "154808555" /workspace/dmeyer/data/influenza
-# ./build/accessonly -p "205281778" /workspace/dmeyer/data/coreutils
-#./build/accessonly -p "257961616" /workspace/dmeyer/data/kernel
-#  ./build/accessonly -p "467626544" /workspace/dmeyer/data/einstein.en.txt
-#  ./build/accessonly -p "461286644" /workspace/dmeyer/data/cere
-#  ./build/accessonly -p "429265758" /workspace/dmeyer/data/para
-   ./build/accessonly -p "296135874" /workspace/dmeyer/data/dblp.xml
-   ./build/accessonly -p "403927746" /workspace/dmeyer/data/dna
-    ./build/accessonly -p "55832855" /workspace/dmeyer/data/pitches
-    ./build/accessonly -p "1184051855" /workspace/dmeyer/data/proteins
-    ./build/accessonly -p "210866607" /workspace/dmeyer/data/sources
-       ./build/accessonly -p "2210395553" /workspace/dmeyer/data/english
+echo id,text_id,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs,treesize_rs,rank_avg,select_avg,s,t,l,result
+./build/accessonly -p "296135874" /workspace/dmeyer/data/dblp.xml
+./build/accessonly -p "403927746" /workspace/dmeyer/data/dna
+./build/accessonly -p "55832855" /workspace/dmeyer/data/pitches
+./build/accessonly -p "1184051855" /workspace/dmeyer/data/proteins
+./build/accessonly -p "210866607" /workspace/dmeyer/data/sources
+./build/accessonly -p "1610612736" /workspace/dmeyer/data/english
