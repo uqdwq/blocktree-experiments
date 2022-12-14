@@ -51,5 +51,5 @@ int main(int argc, char* argv[]) {
     lpf_array_stack(vec, lpf2, lpf_ptr2);
     int64_t s = 1;
     calculate_lz_factor(s, lpf2,lz2);
-    std::cout << a_filename << "#LZ: " << (int64_t) s << " : " << vec.size() << std::endl;
+    std::cout << a_filename << " #LZ: " << (int64_t) s << " : " << vec.size() << std::endl;
 }
