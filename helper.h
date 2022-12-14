@@ -29,7 +29,7 @@ static constexpr int PASTA_WAVELT_MATRIX = 1;
 static constexpr int PASTA_WAVELT_TREE= 2;
 
 //std::cout << id << "," << text_id << "," << vec.size() << "," << bt->print_space_usage() << "," <<ms_int1.count() << "," << malloc_count_peak() + small_size<< "," << (double)elapsed/access_queries_.size() << "," << ms_int2.count() << "," << bt->print_space_usage() <<","<< (double)elapsed2/select_queries_.size() << s<<"," << tau << "," << max_leaf_size <<std::endl;
-void print_result(int id, const std::string& text_id, int vec_size, int small_size, int first_time, int64_t peak_size, double access_avg, int snd_time, int big_size, double rank_avg, double select_avg, int s, int tau, int leaf_size, int64_t result) {
+void print_result(int id, const std::string& text_id, int64_t vec_size, int64_t small_size, int64_t first_time, int64_t peak_size, double access_avg, int64_t snd_time, int64_t big_size, double rank_avg, double select_avg, int s, int tau, int leaf_size, int64_t result) {
     std::cout << id << ",";
     std::cout << text_id << ",";
     std::cout << vec_size << ",";
