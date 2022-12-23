@@ -1,0 +1,21 @@
+##! /bin/bash
+export LD_LIBRARY_PATH=/software/gcc/12.1.0/lib64/:$LD_LIBRARY_PATH
+echo id,text_id,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs,treesize_rs,rank_avg,select_avg,s,t,l,result
+  ./build/main -p "32MiB" /workspace/dmeyer/data/dblp.xml
+  ./build/main -p "32MiB" /workspace/dmeyer/data/dna
+  ./build/main -p "32MiB" /workspace/dmeyer/data/pitches
+  ./build/main -p "32MiB" /workspace/dmeyer/data/proteins
+  ./build/main -p "32MiB" /workspace/dmeyer/data/sources
+  ./build/main -p "32MiB" /workspace/dmeyer/data/english
+    ./build/main -p "32MiB" /workspace/dmeyer/data/dblp.xml
+    ./build/main -p "32MiB" /workspace/dmeyer/data/dna
+    ./build/main -p "32MiB" /workspace/dmeyer/data/pitches
+    ./build/main -p "32MiB" /workspace/dmeyer/data/proteins
+    ./build/main -p "32MiB" /workspace/dmeyer/data/sources
+    ./build/main -p "32MiB" /workspace/dmeyer/data/english
+      ./build/main -p "32MiB" /workspace/dmeyer/data/dblp.xml
+      ./build/main -p "32MiB" /workspace/dmeyer/data/dna
+      ./build/main -p "32MiB" /workspace/dmeyer/data/pitches
+      ./build/main -p "32MiB" /workspace/dmeyer/data/proteins
+      ./build/main -p "32MiB" /workspace/dmeyer/data/sources
+      ./build/main -p "32MiB" /workspace/dmeyer/data/english

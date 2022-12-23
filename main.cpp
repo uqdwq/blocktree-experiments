@@ -89,8 +89,8 @@ int main(int argc, char* argv[]) {
 //
 //    run_pasta_wavelet_matrix(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
 //    run_pasta_wavelet_tree(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
-    std::vector<int> taus = {16,8,4,2,};
-    std::vector<int> leafs = {16,8,4};
+    std::vector<int> taus = {8,4,2,};
+    std::vector<int> leafs = {8,4};
     for (auto t: taus) {
         for (auto l: leafs) {
             // lpf pruned
