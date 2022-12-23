@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+
 /build
 /out
 /data
@@ -44,3 +45,5 @@ notebooks/.ipynb_checkpoints/
 *.pdf
 *.svg
 /buildpar
+
+

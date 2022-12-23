@@ -2,7 +2,10 @@
 // Created by daniel on 27.11.22.
 //
 #include <pasta/wavelet_tree/wavelet_tree.hpp>
+#include <pasta/utils/reduce_alphabet.hpp>
 #include <pasta/utils/memory_monitor.hpp>
+#include <thread>
+
 #ifndef BLOCKTREESEXPERIMENTS_HELPER_H
 #define BLOCKTREESEXPERIMENTS_HELPER_H
 static constexpr bool DONT_CUT_FIRST_LEVEL = false;
@@ -598,28 +601,33 @@ int run_bench_fp_theo_z_CUT(std::vector<uint8_t>& vec, std::string& text_id, std
 int run_pasta_wavelet_matrix(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = WAVELET_TREE;
     auto t01 = std::chrono::high_resolution_clock::now();
+    size_t alphabet_size_ = pasta::reduce_alphabet(vec.begin(), vec.end());
     auto wm = pasta::make_wm<pasta::BitVector>(vec.begin(), vec.end(),
-                                               256);
+                                               alphabet_size_);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto t03 = std::chrono::high_resolution_clock::now();
     auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);
     auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t01);
     int64_t result = 0;
     auto start = std::chrono::high_resolution_clock::now();
-
-    for (auto const& query : access_queries_) {
-        result += wm[query];
-    }
     auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_c_.size(); i++) {
-        result += wm.rank(select_queries_[i],select_c_[i]);
+        result += wm.rank(access_queries_[i],select_c_[i]);
+    }
+    for (int i = 0; i < select_c_.size(); i++) {
+        result += wm.operator[](access_queries_[i]);
+    }
+    for (auto query : access_queries_) {
+        std::cout << query << std::endl;
+        result += wm.operator[]( (size_t)query);
     }
     auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < select_c_.size(); i++) {
         result += wm.select(select_queries_[i],select_c_[i]);
     }
+    std::cout << "test" << std::endl;
     auto elapsed3 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
     print_result(id, text_id, vec.size(), 0, ms_int1.count(), 0,(double)elapsed/access_queries_.size(), ms_int2.count(), 0, (double)elapsed2/select_queries_.size(), (double)elapsed3/select_queries_.size() , s, PASTA_WAVELT_MATRIX, max_leaf_size, result );
     return 0;
@@ -627,8 +635,9 @@ int run_pasta_wavelet_matrix(std::vector<uint8_t>& vec, std::string& text_id, st
 int run_pasta_wavelet_tree(std::vector<uint8_t>& vec, std::string& text_id, std::vector<int>& access_queries_, std::vector<int>& select_queries_, std::vector<uint8_t>& select_c_, int s, int tau, int max_leaf_size) {
     int id = WAVELET_TREE;
     auto t01 = std::chrono::high_resolution_clock::now();
+    size_t alphabet_size_ = pasta::reduce_alphabet(vec.begin(), vec.end());
     auto wt = pasta::make_wt<pasta::BitVector>(vec.begin(), vec.end(),
-                                               256);
+                                               alphabet_size_);
     auto t02 = std::chrono::high_resolution_clock::now();
     auto t03 = std::chrono::high_resolution_clock::now();
     auto ms_int1 = std::chrono::duration_cast<std::chrono::milliseconds>(t02 - t01);

@@ -23,6 +23,7 @@
 #include "helper.h"
 #include "accessonlyhelper.h"
 #include "parallelhelper.h"
+
 int main(int argc, char* argv[]) {
 
     tlx::CmdlineParser cp;
@@ -86,88 +87,18 @@ int main(int argc, char* argv[]) {
 //        hist[c]++;
 //    }
 
+    //run_pasta_wavelet_tree(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
+    run_bench_lpf_heuristics(vec,a_filename,access_queries_, select_queries_, select_c_,1, 2,4);
+    //run_pasta_wavelet_matrix(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
 
-//    run_pasta_wavelet_matrix(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
-    run_pasta_wavelet_tree(vec,a_filename,access_queries_, select_queries_, select_c_,1, 0,0);
-    std::vector<int> taus = {16,8,4,2};
-    std::vector<int> threads = {1,2,4,8,16,32,40};
-    int l = 8;
+    std::vector<int> taus = {2,4,8};
+    std::vector<int> threads = {1,2,4,8,16,32,64,128};
+    int l = 4;
     for (auto t: taus) {
         for (auto th: threads) {
-            run_bench_lpf_pruned_s_parallel(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l,th);
-            run_bench_lpf_theo_z_parallel(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l,th);
-            run_bench_lpf_heu_z_parallel(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l,th);
-
-
-
-
-//            run_bench_lpf_theory(vec, a_filename,access_queries_,t,l);
-
-//            run_bench_fp_theory(vec, a_filename,access_queries_,1,t,l);
+            run_bench_lpf_pruned_z_parallel(vec,a_filename,access_queries_, select_queries_, select_c_,1, t,l,th);
         }
     }
-
-
-//
-//    auto t11 = std::chrono::high_resolution_clock::now();
-//
-//    auto t03 = std::chrono::high_resolution_clock::now();
-//    auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t03 - t11);
-//    auto t04 = std::chrono::high_resolution_clock::now();
-//    BV_BlockTree_fp_pruned<uint8_t, int32_t>*  bt3 = new BV_BlockTree_fp_pruned<uint8_t, int32_t>(vec, 2, 1,1);
-//    auto t05 = std::chrono::high_resolution_clock::now();
-//    auto ms_int3 = std::chrono::duration_cast<std::chrono::milliseconds>(t05 - t04);
-//    std::cout << "time " << ms_int2.count() << std::endl;
-//    std::cout << "time " << ms_int3.count() << std::endl;
-//    auto first = malloc_count_current();
-//    std::random_device rnd_device;
-//    std::mt19937 mersenne_engine(rnd_device());
-//    std::vector<int> access_queries_;
-//    std::vector<int> select_queries_;
-//    std::vector<uint8_t> select_c_;
-//    std::uniform_int_distribution<uint64_t> dist(0, input.size());
-//    for (size_t i = 0; i < 1000000; ++i) {
-//        access_queries_.push_back(dist(mersenne_engine));
-//    }
-//    for (size_t i = 0; i < 1000000; ++i) {
-//        uint8_t x = 0;
-//        int xsum = 0;
-//        while (xsum + hist[x] < access_queries_[i]) {
-//            xsum += hist[x];
-//            x++;
-//        }
-//        select_c_.push_back(x);
-//        select_queries_.push_back(access_queries_[i] - xsum);
-//    }
-//    std::cout << "Starting Queries" << "\n";
-//    size_t result = 0;
-//    auto start = std::chrono::high_resolution_clock::now();
-//    for (auto const& query : access_queries_) {
-//        result += cbt->access(query);
-//    }
-//    auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start).count();
-//    auto start2 = std::chrono::high_resolution_clock::now();
-//    for (int i = 0; i < select_c_.size(); i++) {
-//        result += cbt->rank(select_c_[i], access_queries_[i]);
-//    }
-//    auto elapsed2 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start2).count();
-//    auto start3 = std::chrono::high_resolution_clock::now();
-//    for (int i = 0; i < select_c_.size(); i++) {
-//        result += cbt->select(select_c_[i], select_queries_[i]);
-//    }
-//    auto elapsed3 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start3).count();
-//
-//    std::cout << "Ending Queries " << result << "\n";
-//    double nanosec_per_access = elapsed / static_cast<double>(access_queries_.size());
-//    double nanosec_per_rank = elapsed2 / static_cast<double>(access_queries_.size());
-//    double nanosec_per_select = elapsed3 / static_cast<double>(access_queries_.size());
-//    std::cout << "#access queries " << access_queries_.size() << std::endl;
-//    std::cout << nanosec_per_access << " ns per query\n";
-//    std::cout << "#rank queries " << access_queries_.size() << std::endl;
-//    std::cout << nanosec_per_rank << " ns per query\n";
-//    std::cout << "#select queries " << access_queries_.size() << std::endl;
-//    std::cout << nanosec_per_select << " ns per query\n";
-//    delete bt3;
     return 0;
 }
 

@@ -1,6 +1,6 @@
 ##! /bin/bash
 export LD_LIBRARY_PATH=/software/gcc/12.1.0/lib64/:$LD_LIBRARY_PATH
-echo id,text_id,threads,textsize,treesize,constr_time,peak_mem,access_avg,constr_time_rs,treesize_rs,rank_avg,select_avg,s,t,l,result
+echo id,text_id,threads,textsize,lpf_time,constr_time,access_avg,constr_time_rs,rank_avg,select_avg,s,t,l,result
  ./buildpar/parallelbench -p "46968181" /workspace/dmeyer/data/world_leaders
  ./buildpar/parallelbench -p "112689515" /workspace/dmeyer/data/Escherichia_Coli
  ./buildpar/parallelbench -p "154808555" /workspace/dmeyer/data/influenza
